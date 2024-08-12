@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kubernetes-test
+  name: streamlit
+  labels:
+    app: streamlit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit
+  template:
+    metadata:
+      labels:
+        app: streamlit
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: streamlit
+          imagePullPolicy: "Always"
+          image: sepo96/kubernetes_test:streamlit
+          ports:
+            - containerPort: 8501
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-service
+  namespace: kubernetes-test
+spec:
+
+  type: NodePort
+  ports:
+    - port: 8501
+      targetPort: 8501
+      nodePort: 30000
+  selector:
+    app: streamlit
+
